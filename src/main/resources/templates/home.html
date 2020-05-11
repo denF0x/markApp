@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Привет, погнали работать</title>
+</head>
+<body>
+<!-- common table for all  -->
+<table>
+    <tr>
+        <!--        first column for students-->
+        <td th:width="400">
+            <div>
+                Таблица студентов
+                <table border="1">
+                    <tr>
+                        <th>Id</th>
+                        <th>Фамилия</th>
+                    </tr>
+                    <tr th:each="student, statVar : ${students}">
+                        <td th:utext="${statVar.index+1} + (${stPageNumber} - 1) * 10">...</td>
+                        <td><a th:href="@{/?student={id}(id=${student.id})}" th:utext="${student.lastName}">...</a></td>
+                        <td><a th:href="@{/students/{studentId}/edit(studentId=${student.id})}">Edit</a></td>
+                        <td><form  method="post" th:action="@{/students/{studentId}/delete(studentId=${student.id})}" th:object="${student}">
+                            <input type="submit" value="Delete">
+                        </form></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <span th:if="${stHasPrev}"><a th:href="@{/?stPage={stPrev}(stPrev=${stPrev})}">Prev</a>&nbsp;&nbsp;&nbsp;</span>
+                <span th:if="${stHasNext}"><a th:href="@{/?stPage={stNext}(stNext=${stNext})}">Next</a></span>
+            </div>
+            <br>
+            <form method="post" th:action="@{/saveStudent}" th:object="${student}">
+                Добавление студента в базу данных <br>
+                <label for="stuName">Фамилия студента: </label>
+                <input type="text" name="lastName" id="stuName"/>
+                <br/>
+                <input type="submit" value="Отправить"/>
+            </form>
+
+        </td>
+        <!--        second column for subject-->
+        <td th:width="400">
+            <div>
+                Таблица предметов
+                <table border="1">
+                    <tr>
+                        <th>Id</th>
+                        <th>Название</th>
+                    </tr>
+                    <tr th:each="subject, statVar : ${subjects}">
+                        <td th:utext="${statVar.index+1} + (${suPageNumber} - 1) * 10">...</td>
+                        <td><a th:href="@{/?subject={id}(id=${subject.id})}" th:utext="${subject.subjectName}">...</a></td>
+                        <td><a th:href="@{/subjects/{subjectId}/edit(subjectId=${subject.id})}">Edit</a></td>
+                        <td><form  method="post" th:action="@{/subjects/{subjectId}/delete(subjectId=${subject.id})}" th:object="${subject}">
+                            <input type="submit" value="Delete">
+                        </form></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <span th:if="${suHasPrev}"><a th:href="@{/?suPage={suPrev}(suPrev=${suPrev})}">Prev</a>&nbsp;&nbsp;&nbsp;</span>
+                <span th:if="${suHasNext}"><a th:href="@{/?suPage={suNext}(suNext=${suNext})}">Next</a></span>
+            </div>
+
+            <br>
+            <form method="post" th:action="@{/saveSubject}" th:object="${subject}">
+                Добавление предмета в базу данных <br>
+                <label for="subName">Название предмета: </label>
+                <input type="text" name="subjectName" id="subName"/>
+                <br/>
+                <input type="submit" value="Отправить"/>
+            </form>
+        </td>
+        <td>
+            <!--            marks by subject-->
+            <form action="#" method="get" th:action="@{/}" th:object="${mark}" id="markBySubj">
+                Посмотреть оценки по предмету <br>
+                <label for="markId">ID: </label>
+                <select id="markId" th:field="*{subject}">
+                    <option value="">Выберите предмет</option>
+                    <option th:each="subject : ${subjects}"
+                            th:value="${subject.id}"
+                            th:utext="${subject.subjectName}">
+                    </option>
+                </select>
+                <!--    <a th:href="@{/getMarks/{id}(id=${subject.id})}">Посмотреть</a>-->
+                <input type="submit" value="Посмотреть"/>
+                <!--    th:action="@{/getMarks/{id}(id=${subject.id})}"-->
+            </form>
+
+            <table border="1" cellpadding="2" cellspacing="2">
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Value</th>
+                    <th>Date</th>
+
+                </tr>
+                <tr th:each="mark, statVar : ${markListBySubject}">
+                    <td th:utext="${statVar.index+1}">...</td>
+                    <td th:text="${mark.student.getLastName()}"></td>
+                    <td th:text="${mark.value}"></td>
+                    <td th:text="${mark.createdAt}"></td>
+                    <td><a th:href="@{/marks/{markId}/edit(markId=${mark.id})}">Edit</a></td>
+                    <td><form  method="post" th:action="@{/marks/{markId}/delete(markId=${mark.id})}" th:object="${mark}">
+                        <input type="submit" value="Delete">
+                    </form></td>
+                </tr>
+            </table>
+            <br>
+            <br>
+
+
+            <form action="#" method="get" th:action="@{/}" th:object="${mark}" id="markByStudent">
+                Посмотреть оценки по студенту <br>
+                <label for="markId">ID: </label>
+                <select id="markId" th:field="*{student}">
+                    <option value="">Выберите студента</option>
+                    <option th:each="student : ${students}"
+                            th:value="${student.id}"
+                            th:utext="${student.lastName}">
+                    </option>
+                </select>
+                <!--    <a th:href="@{/getMarks/{id}(id=${subject.id})}">Посмотреть</a>-->
+                <input type="submit" value="Посмотреть"/>
+                <!--    th:action="@{/getMarks/{id}(id=${subject.id})}"-->
+            </form>
+
+            <table border="1" cellpadding="2" cellspacing="2">
+                <tr>
+                    <th>ID</th>
+                    <th>Subject</th>
+                    <th>Value</th>
+                    <th>Date</th>
+
+                </tr>
+                <tr th:each="mark, statVar : ${markListByStudent}">
+                    <td th:utext="${statVar.index+1}">...</td>
+                    <td th:text="${mark.subject.getSubjectName()}"></td>
+                    <td th:text="${mark.value}"></td>
+                    <td th:text="${mark.createdAt}"></td>
+                    <td><a th:href="@{/marks/{markId}/edit(markId=${mark.id})}">Edit</a></td>
+                    <td><form  method="post" th:action="@{/marks/{markId}/delete(markId=${mark.id})}" th:object="${mark}">
+                        <input type="submit" value="Delete">
+                    </form></td>
+                </tr>
+            </table>
+
+        </td>
+
+    </tr>
+</table>
+
+
+<br>
+Поставить оценку
+<form method="post" th:action="@{/saveMark}" th:object="${mark}">
+    <label for="studentId">Кто: </label>
+    <select id="studentId" th:field="*{student}">
+        <option value="">Выберите студента</option>
+        <option th:each="student : ${markStudents}"
+                th:value="${student.id}"
+                th:utext="${student.lastName}">
+        </option>
+    </select>
+    <label for="subjectId">За что: </label>
+    <select id="subjectId" th:field="*{subject}">
+        <option value="">Выберите предмет</option>
+        <option th:each="subject : ${markSubjects}"
+                th:value="${subject.id}"
+                th:utext="${subject.subjectName}">
+        </option>
+    </select>
+    <label for="dateId">Дата: </label>
+    <select id="dateId" th:field="*{createdAt}">
+        <option th:each="i : ${#numbers.sequence(0, 31)}" th:value="${i}" th:utext="${i}">
+        </option>
+    </select>
+    <!--    <input type="text" name="createdAt" id="dateId"/>-->
+    <label for="valueId">Оценка: </label>
+    <select id="valueId" th:field="*{value}">
+        <option th:each="i : ${#numbers.sequence(0, 100)}" th:value="${i}" th:utext="${i}">
+        </option>
+    </select>
+    <!--    <input type="text" name="value" id="valueId"/>-->
+    <input type="submit" value="Поставить">
+</form>
+<br>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Оценка</title>
+</head>
+<body>
+<form th:action="@{/marks/{markId}/edit(markId=${mark.id})}"
+      th:object="${mark}" method="POST">
+    <table border="0">
+        <tr>
+            <td>ID</td>
+            <td>:</td>
+            <td th:utext="${mark.id}">...</td>
+        </tr>
+        <tr>
+            <td>Student</td>
+            <td>:</td>
+            <td th:utext="${mark.student.getLastName()}"></td>
+        </tr>
+        <tr>
+            <td>Subject</td>
+            <td>:</td>
+            <td th:text="${mark.subject.getSubjectName()}"></td>
+        </tr>
+        <tr>
+            <td>Value</td>
+            <td>:</td>
+            <td><input type="text" th:field="*{value}"/></td>
+        </tr>
+        <tr>
+            <td>Date</td>
+            <td>:</td>
+            <td><input type="text" th:field="*{createdAt}"/></td>
+        </tr>
+
+    </table>
+    <br>
+    <input type="submit" value="Обновить">
+
+</form>
+
+</body>
+</html>

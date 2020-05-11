@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Студент</title>
+</head>
+<body>
+<form th:action="@{/students/{studentId}/edit(studentId=${student.id})}"
+      th:object="${student}" method="POST">
+    <table border="0">
+        <tr>
+            <td>ID</td>
+            <td>:</td>
+            <td th:utext="${student.id}">...</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>:</td>
+            <td><input type="text" th:field="*{lastName}"/></td>
+        </tr>
+
+    </table>
+    <br>
+    <input type="submit" value="Обновить">
+
+</form>
+
+</body>
+</html>
